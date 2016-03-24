@@ -12,9 +12,7 @@ jxl.log
 jmx.log
 derby.log
 spring-test/test-output/
-.gradle
 argfile*
-pom.xml
 activemq-data/
 
 /build
