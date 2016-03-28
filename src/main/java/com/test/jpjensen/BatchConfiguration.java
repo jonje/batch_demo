@@ -1,5 +1,7 @@
 package com.test.jpjensen;
 
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
@@ -23,12 +25,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 
 /**
  * Created by jjensen on 3/24/16.
  */
+
 @Configuration
 @EnableBatchProcessing
 public class BatchConfiguration {
@@ -93,4 +98,5 @@ public class BatchConfiguration {
                 .writer(writer())
                 .build();
     }
+
 }
