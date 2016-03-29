@@ -9,7 +9,13 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.explore.support.JobExplorerFactoryBean;
+import org.springframework.batch.core.explore.support.SimpleJobExplorer;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.launch.support.SimpleJobOperator;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
@@ -37,6 +43,8 @@ import javax.sql.DataSource;
 @Configuration
 @EnableBatchProcessing
 public class BatchConfiguration {
+
+    private final String JOB_NAME = "importUserJob";
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
 
@@ -45,6 +53,9 @@ public class BatchConfiguration {
 
     @Autowired
     public DataSource dataSource;
+
+    @Autowired
+    private JobLauncher jobLauncher;
 
     @Bean
     public FlatFileItemReader<Person> reader () {
@@ -77,17 +88,20 @@ public class BatchConfiguration {
 
     @Bean
     public JobExecutionListener listener() {
-        return new JobCompletionNotificationListener(new JdbcTemplate(dataSource));
+        return new JobCompletionNotificationListener(new JdbcTemplate(dataSource), JOB_NAME);
     }
 
-    @Bean public Job importUserJob() {
-        return jobBuilderFactory.get("importUserJob")
+    @Bean
+    public Job importUserJob() {
+        return jobBuilderFactory.get(JOB_NAME)
                 .incrementer(new RunIdIncrementer())
                 .listener(listener())
                 .flow(step1())
                 .end()
                 .build();
     }
+
+
 
     @Bean
     public Step step1() {
@@ -96,6 +110,7 @@ public class BatchConfiguration {
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
+                .allowStartIfComplete(true)
                 .build();
     }
 

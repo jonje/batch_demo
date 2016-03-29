@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 /**
- * Created by jjensen on 3/24/16.
+ * Created by jpjensen on 3/24/16.
  */
 public class PersonItemProcessor implements ItemProcessor<Person, Person> {
     private static final Logger log = LoggerFactory.getLogger(PersonItemProcessor.class);
@@ -18,6 +18,7 @@ public class PersonItemProcessor implements ItemProcessor<Person, Person> {
         final Person transformedPerson = new Person(firstName, lastName);
 
         log.info("Converting (" + person + ") into (" + transformedPerson + ")");
+        Thread.sleep(10000);
         return transformedPerson;
     }
 }

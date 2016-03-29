@@ -3,6 +3,7 @@ package com.test.jpjensen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -18,6 +19,9 @@ import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by jjensen on 3/28/16.
@@ -34,14 +38,12 @@ public class ScheduledTasks {
     @Autowired
     JobLauncher jobLauncher;
 
-    @Scheduled(cron="*/10 * * * * *")
+    @Scheduled(cron="5 * * * * *")
     public void reportCurrentTime(){
-        log.info("testCase() fired.");
-        log.info("The time is now " + dateFormat.format(new Date()));
         Job job = batchConfiguration.importUserJob();
 
         try {
-            jobLauncher.run(job, new JobParameters());
+            JobHelper.JOBS.put(job.getName(), jobLauncher.run(job, new JobParameters()));
         } catch (JobExecutionAlreadyRunningException e) {
             e.printStackTrace();
         } catch (JobRestartException e) {
