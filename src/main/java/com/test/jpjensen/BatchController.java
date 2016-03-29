@@ -1,13 +1,17 @@
 package com.test.jpjensen;
 
-import org.springframework.batch.core.Job;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobInterruptedException;
 import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,11 +24,14 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/batch")
 public class BatchController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BatchController.class);
+
     @Autowired
     private BatchConfiguration batchConfiguration;
 
     @Autowired
-    private JobOperator operator;
+    private CommandService commandService;
 
     @RequestMapping(value = "/stats", method = RequestMethod.GET)
     public @ResponseBody
@@ -47,6 +54,16 @@ public class BatchController {
         }
 
         return jobStatusDTO;
+    }
+
+    @RequestMapping(value = "/{jobName}/{command}", method = RequestMethod.GET)
+    public @ResponseBody String runCommand(@PathVariable String jobName, @PathVariable String command) {
+        try {
+            commandService.processCommand(jobName, command);
+        } catch (JobInterruptedException e) {
+            LOG.error("Batch job manually stopped.");
+        }
+        return "Success";
     }
 
     @RequestMapping(value = "/job-names", method = RequestMethod.GET)
