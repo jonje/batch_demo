@@ -30,7 +30,7 @@ public class ScheduledTasks {
     @Autowired
     JobLauncher jobLauncher;
 
-    @Scheduled(cron="5 * * * * *")
+    @Scheduled(cron="* * * 1 1 ?")
     public void runImportUsers(){
         Job job = batchConfiguration.importUserJob();
 

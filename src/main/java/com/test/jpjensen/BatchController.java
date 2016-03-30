@@ -5,14 +5,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInterruptedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.parsing.ConstructorArgumentEntry;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -56,13 +64,33 @@ public class BatchController {
     }
 
     @RequestMapping(value = "/{jobName}/{command}", method = RequestMethod.GET)
-    public @ResponseBody String runCommand(@PathVariable String jobName, @PathVariable String command) {
-        try {
-            commandService.processCommand(jobName, command);
-        } catch (JobInterruptedException e) {
-            LOG.error("Batch job manually stopped.");
+    public @ResponseBody String runCommand(@PathVariable String jobName, @PathVariable String command) throws Exception {
+//        try {
+//            commandService.processCommand(jobName, command);
+//        } catch (JobInterruptedException e) {
+//            LOG.error("Batch job manually stopped.");
+//        }
+        String status = "Success";
+        InteruptableRunnable job;
+        switch (command) {
+            case "start":
+                job = new MyJob("file:///home/jjensen/Projects/TestJar/out/artifacts/TestJar_jar/TestJar.jar", "com.test.jpjensen.Bean", "run", "stop");
+                ExecutorService executorService = Executors.newFixedThreadPool(1);
+                executorService.submit(job);
+                JobHelper.THE_JOBS.put(jobName, new Holder(executorService, job));
+                break;
+            case "stop":
+                Holder holder = JobHelper.THE_JOBS.get(jobName);
+                ExecutorService executorService1 = holder.getExecutorService();
+                executorService1.shutdownNow();
+                InteruptableRunnable runnable = holder.getRunnable();
+                runnable.stopJob();
+                JobHelper.THE_JOBS.remove(jobName);
+                break;
+            default:
+                status = "Unknown Command";
         }
-        return "Success";
+        return status;
     }
 
     @RequestMapping(value = "/job-names", method = RequestMethod.GET)
