@@ -50,6 +50,7 @@ public class ContextRefreshedListener implements ApplicationListener<ContextRefr
             LOG.info("All jobs scheduled.");
             scheduler.start();
 
+
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (SchedulerException e) {

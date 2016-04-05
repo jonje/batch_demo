@@ -1,5 +1,6 @@
 package gov.utah.dts;
 
+import gov.utah.dts.watcher.JarWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecution;
@@ -69,7 +70,8 @@ public class BatchController {
             case "start":
                 job = new MyJob("file:///home/jjensen/Projects/job-mysql/out/artifacts/job_mysql_jar/job-mysql.jar", "gov.utah.test.Configuration", "run", "stop");
                 ExecutorService executorService = Executors.newFixedThreadPool(1);
-                executorService.submit(job);
+                JarWatcher jarWatcher = new JarWatcher();
+                executorService.submit(jarWatcher);
                 JobHelper.THE_JOBS.put(jobName, new Holder(executorService, job));
                 break;
             case "stop":
