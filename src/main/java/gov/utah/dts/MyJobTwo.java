@@ -1,4 +1,4 @@
-package com.test.jpjensen;
+package gov.utah.dts;
 
 import org.quartz.*;
 import org.springframework.scheduling.quartz.QuartzJobBean;

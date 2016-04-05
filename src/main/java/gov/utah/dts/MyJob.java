@@ -1,4 +1,10 @@
-package com.test.jpjensen;
+package gov.utah.dts;
+
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -10,7 +16,8 @@ import java.net.URLClassLoader;
 /**
  * Created by jjensen on 3/30/16.
  */
-public class MyJob implements InteruptableRunnable {
+public class MyJob implements InteruptableRunnable, Job {
+    private static final Logger LOG = LoggerFactory.getLogger(MyJob.class);
     private String jarPath;
     private String startingMethodName;
     private String stopMethodName;
@@ -83,5 +90,10 @@ public class MyJob implements InteruptableRunnable {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        LOG.info("Job " + jobExecutionContext.getJobDetail().getKey().toString() + " executed at " + jobExecutionContext.getFireTime());
     }
 }

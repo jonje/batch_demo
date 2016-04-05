@@ -1,4 +1,4 @@
-package com.test.jpjensen;
+package gov.utah.dts;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.test.jpjensen;
+package gov.utah.dts;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

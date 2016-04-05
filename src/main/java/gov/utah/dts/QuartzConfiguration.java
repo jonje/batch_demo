@@ -1,4 +1,4 @@
-package com.test.jpjensen;
+package gov.utah.dts;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;

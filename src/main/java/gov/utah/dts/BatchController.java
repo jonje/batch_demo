@@ -1,26 +1,19 @@
-package com.test.jpjensen;
+package gov.utah.dts;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInterruptedException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.parsing.ConstructorArgumentEntry;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -74,7 +67,7 @@ public class BatchController {
         InteruptableRunnable job;
         switch (command) {
             case "start":
-                job = new MyJob("file:///home/jjensen/Projects/TestJar/out/artifacts/TestJar_jar/TestJar.jar", "com.test.jpjensen.Bean", "run", "stop");
+                job = new MyJob("file:///home/jjensen/Projects/job-mysql/out/artifacts/job_mysql_jar/job-mysql.jar", "gov.utah.test.Configuration", "run", "stop");
                 ExecutorService executorService = Executors.newFixedThreadPool(1);
                 executorService.submit(job);
                 JobHelper.THE_JOBS.put(jobName, new Holder(executorService, job));

@@ -1,4 +1,4 @@
-package com.test.jpjensen;
+package gov.utah.dts;
 
 /**
  * Created by jjensen on 3/28/16.

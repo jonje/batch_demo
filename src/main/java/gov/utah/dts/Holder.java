@@ -1,4 +1,4 @@
-package com.test.jpjensen;
+package gov.utah.dts;
 
 import java.util.concurrent.ExecutorService;
 
@@ -61,6 +61,6 @@ public class Holder {
     }
 
     public String toString() {
-        return "com.test.jpjensen.Holder(executorService=" + this.executorService + ", runnable=" + this.runnable + ")";
+        return "Holder(executorService=" + this.executorService + ", runnable=" + this.runnable + ")";
     }
 }
