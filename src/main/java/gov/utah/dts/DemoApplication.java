@@ -34,6 +34,5 @@ public class DemoApplication {
 
 		ConfigurableApplicationContext applicationContext = SpringApplication.run(DemoApplication.class, args);
         EventHolderBean bean = applicationContext.getBean(EventHolderBean.class);
-        System.out.println("Event Processed?? - " + bean.getEventFired());
     }
 }
